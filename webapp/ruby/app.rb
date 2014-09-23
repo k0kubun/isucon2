@@ -84,6 +84,8 @@ class Isucon2App < Sinatra::Base
          ORDER BY order_id DESC LIMIT 10',
       ).to_a
 
+      return [] if recent_sold.size == 0
+
       values = recent_sold.map { |data|
         %Q{('#{data["seat_id"]}',#{data["order_id"] ? data["order_id"] : "NULL" },'#{data["a_name"]}','#{data["t_name"]}','#{data["v_name"]}')}
       }.join(",")
