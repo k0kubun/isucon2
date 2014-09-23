@@ -86,6 +86,7 @@ class Isucon2App < Sinatra::Base
 
       return [] if recent_sold.size == 0
 
+      mysql.query('BEGIN')
       mysql.query("delete from recent_sold")
       values = recent_sold.map { |data|
         %Q{('#{data["seat_id"]}',#{data["order_id"] ? data["order_id"] : "NULL" },'#{data["a_name"]}','#{data["t_name"]}','#{data["v_name"]}')}
@@ -99,11 +100,8 @@ class Isucon2App < Sinatra::Base
            recent_sold.t_name=VALUES(t_name),
            recent_sold.v_name=VALUES(v_name)
         "
-      begin
-        mysql.query(sql)
-      rescue
-        raise sql
-      end
+      mysql.query(sql)
+      mysql.query('COMMIT')
 
       recent_sold
     end
